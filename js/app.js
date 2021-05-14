@@ -3,6 +3,8 @@ import Bird from './bird.mjs';
 import Gameover from './gameover.mjs';
 import Foreground from './fg.mjs';
 import Menu from './menu.mjs';
+import Pipe from './pipe.mjs';
+import { getRandom } from './utils.mjs';
 
 let canvas, ctx;
 let sprite;
@@ -10,6 +12,8 @@ let bg, fg, bird, gameover;
 let state;
 let score, highScore;
 let menu;
+let pipe, pipeArray = [];
+let interval;
 
 let start = () => {
     canvas = document.querySelector('.canvas');
@@ -19,7 +23,7 @@ let start = () => {
     sprite.src = './assets/sprite.png';
 
     state = {
-        current: 2,
+        current: 0,
         menu: 0,
         running: 1,
         gameover: 2
@@ -37,13 +41,23 @@ let start = () => {
 let reset = () => {
     bird = new Bird(canvas);
     score = 0;
+    pipeArray = [new Pipe(canvas, -getRandom(0, 150), sprite)];
+
+    interval = setInterval(() => {
+        pipe = new Pipe(canvas, -getRandom(0, 100), sprite);
+        pipeArray.push(pipe);
+    }, 5000);
 }
 
 //update function
 let update = () => {
     if (state.current == state.running) {
         fg.update();
-        bird.update();
+        bird.fall();
+
+        pipeArray.forEach((pipe) => {
+            pipe.update();
+        })
     };
 }
 
@@ -52,13 +66,17 @@ let draw = () => {
     ctx.fillStyle = 'rgb(65,163,168)';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     bg.draw(ctx, sprite);
-    fg.draw(ctx, sprite);
+
 
     if (state.current == state.menu) {
         menu.draw(ctx, sprite);
     }
     else if (state.current == state.running) {
         bird.draw(ctx, sprite);
+
+        pipeArray.forEach((pipe) => {
+            pipe.draw(ctx);
+        })
 
         //draw score
         ctx.font = "25px Verdana";
@@ -67,8 +85,14 @@ let draw = () => {
         ctx.fillText(`Score: ${score}`, 650, 45);
     }
     else if (state.current == state.gameover) {
+        pipeArray.forEach((pipe) => {
+            pipe.draw(ctx);
+        })
+
         gameover.draw(ctx, sprite, score, highScore);
     }
+
+    fg.draw(ctx, sprite);
 }
 
 //loop

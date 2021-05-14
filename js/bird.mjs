@@ -10,7 +10,7 @@ function Bird(canvas) {
     this.height = this.spriteHeight * 1.33;
     this.dy = 2;
 
-    this.update = () => {
+    this.fall = () => {
         this.y = this.y + this.dy;
         this.dy = this.dy + 0.25; // acceleration
     }
