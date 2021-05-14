@@ -34,7 +34,6 @@ let start = () => {
     fg = new Foreground(canvas);
     menu = new Menu(canvas);
 
-    reset();
     loop();
 }
 
@@ -46,7 +45,7 @@ let reset = () => {
     interval = setInterval(() => {
         pipe = new Pipe(canvas, -getRandom(0, 100), sprite);
         pipeArray.push(pipe);
-    }, 5000);
+    }, 3000);
 }
 
 //update function
@@ -55,8 +54,33 @@ let update = () => {
         fg.update();
         bird.fall();
 
+        //don't draw pipe when not visible
+        if (pipeArray.length > 0) {
+            if (pipeArray[0].x + pipeArray[0].width <= 0) {
+                pipeArray.shift();
+            }
+        }
+
         pipeArray.forEach((pipe) => {
             pipe.update();
+
+            if (!pipe.crossed) {
+                if (pipe.x <= bird.x - pipe.width) {
+                    pipe.cross();
+                    score++;
+                }
+            }
+
+            //if collision, game completed
+            if (bird.hasCollisionDetected(pipe, fg)) {
+                state.current = state.gameover;
+                clearInterval(interval);
+                highScore = window.localStorage.getItem('high-score') ? parseInt(window.localStorage.getItem('high-score')) : 0;
+                if (score > highScore) {
+                    highScore = score;
+                    window.localStorage.setItem('high-score', score);
+                }
+            }
         })
     };
 }
@@ -88,6 +112,8 @@ let draw = () => {
         pipeArray.forEach((pipe) => {
             pipe.draw(ctx);
         })
+
+        bird.draw(ctx, sprite);
 
         gameover.draw(ctx, sprite, score, highScore);
     }

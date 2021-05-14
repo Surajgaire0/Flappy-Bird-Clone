@@ -3,21 +3,25 @@ function Pipe(canvas, y, sprite) {
     this.spriteHeight = 400;
     this.width = 55;
     this.height = 200;
-    this.spriteX_topPipe = 550;
+    this.spriteX_topPipe = 552;
     this.spriteY_topPipe = 0;
     this.spriteX_bottomPipe = 500;
     this.spriteY_bottomPipe = 0;
     this.dx = -2;
-    this.gap = 100;
+    this.gap = 138;
     this.canvas = canvas;
     this.x = this.canvas.width - 100;;
     this.y = y;
     this.lower_y = this.y + this.height + this.gap;//y_pos of lower pipe
-
+    this.crossed = false;
 
 
     this.update = () => {
         this.x = this.x + this.dx;
+    }
+
+    this.cross = () => {
+        this.crossed = true;
     }
 
     this.draw = (ctx) => {
