@@ -5,7 +5,7 @@ function Foreground(canvas) {
     this.spriteHeight = 109;
     this.x = 0;
     this.y = canvas.height - 109; //canvas_height-spriteHeight
-    this.dx = 2;
+    this.dx = 5;
     this.canvas = canvas;
 
     this.update = () => {

@@ -40,12 +40,12 @@ let start = () => {
 let reset = () => {
     bird = new Bird(canvas);
     score = 0;
-    pipeArray = [new Pipe(canvas, -getRandom(0, 150), sprite)];
+    pipeArray = [new Pipe(canvas, -getRandom(0, 200), sprite)];
 
     interval = setInterval(() => {
         pipe = new Pipe(canvas, -getRandom(0, 100), sprite);
         pipeArray.push(pipe);
-    }, 3000);
+    }, 1000);
 }
 
 //update function
